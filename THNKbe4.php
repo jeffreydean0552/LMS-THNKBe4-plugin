@@ -47,8 +47,10 @@ add_filter('wp_nav_menu_items', 'custom_nav_menu_items', 10, 2);
 
 function custom_nav_menu_items($items, $args) {
     if (is_user_logged_in()) {
-		$items .= '<li id="menu-item-3051" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3051"><a href="https://thinkbe4.macktesting.com/wp/courses/" aria-current="page">Courses</a></li>';
-        $items .= '<li id="menu-item-3048" class="menu-item menu-item-type-post_type menu-item-object-page page-item-13 menu-item-3048"><a href="https://thinkbe4.macktesting.com/wp/profile/" aria-current="page">Profile</a></li>';
+        $courses_url = home_url('/courses-2/');
+        $profile_url = home_url('/profile/');
+		$items .= '<li id="menu-item-3051" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3051"><a href="'. $courses_url . '" aria-current="page">Courses</a></li>';
+        $items .= '<li id="menu-item-3048" class="menu-item menu-item-type-post_type menu-item-object-page page-item-13 menu-item-3048"><a href="'. $profile_url . '" aria-current="page">Profile</a></li>';
     }
 
     return $items;
@@ -56,14 +58,14 @@ function custom_nav_menu_items($items, $args) {
 
 function redirect_default_page_to_login() {
     if (is_front_page() && !is_user_logged_in()) {
-        wp_redirect("https://thinkbe4.macktesting.com/wp/log-in/");
+        wp_redirect(home_url('/log-in/'));
         exit;
     }
 }
 add_action('template_redirect', 'redirect_default_page_to_login');
 
 function custom_aad_sso_login_redirect($user_login, $user) {
-	$redirect_url = 'https://thinkbe4.macktesting.com/wp/';
+	$redirect_url = home_url('/');
 	
 	$current_user = wp_get_current_user();
 	$user_id = $current_user->ID;
@@ -75,12 +77,12 @@ function custom_aad_sso_login_redirect($user_login, $user) {
 	}
 	
 	if ($approved) {
-		$redirect_url = 'https://thinkbe4.macktesting.com/wp/';
+		$redirect_url = home_url('/');
 		wp_redirect($redirect_url);
 	} else {
 		wp_logout();
 	    wp_clear_auth_cookie(); 
-		$redirect_url = 'https://thinkbe4.macktesting.com/wp/your-registration-request-has-been-submitted/';
+		$redirect_url = home_url('/your-registration-request-has-been-submitted/');
 		wp_redirect($redirect_url);
 	}
     
@@ -90,7 +92,7 @@ add_action('wp_login', 'custom_aad_sso_login_redirect', 10, 2);
 
 
 function logout_button_shortcode() {
-	$redirect_url = 'https://thinkbe4.macktesting.com/wp/log-in/';
+	$redirect_url = home_url('/log-in/');
 	$logout_url = wp_logout_url( $redirect_url );
     return '<a href="' . $logout_url . '" class="button" style="float: right;">Logout</a>';
 }
